@@ -4,10 +4,9 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 const container = document.getElementById('model-container');
 
-// SCENE
 const scene = new THREE.Scene();
 
-// CAMERA
+
 const camera = new THREE.PerspectiveCamera(
     45,
     container.clientWidth / container.clientHeight,
@@ -15,7 +14,7 @@ const camera = new THREE.PerspectiveCamera(
     1000
 );
 
-// RENDERER
+
 const renderer = new THREE.WebGLRenderer({
     antialias: true,
     alpha: true
@@ -25,7 +24,7 @@ renderer.setSize(container.clientWidth, container.clientHeight);
 renderer.setPixelRatio(window.devicePixelRatio);
 container.appendChild(renderer.domElement);
 
-// LIGHTING
+
 scene.add(new THREE.AmbientLight(0xffffff, 2));
 
 const mainLight = new THREE.DirectionalLight(0xffffff, 3);
@@ -36,11 +35,9 @@ const fillLight = new THREE.DirectionalLight(0xffffff, 2);
 fillLight.position.set(-5, 3, 5);
 scene.add(fillLight);
 
-// MODEL GROUP
 const modelGroup = new THREE.Group();
 scene.add(modelGroup);
 
-// LOAD BLENDER MODEL
 const loader = new GLTFLoader();
 
 loader.load('./basicBox.glb', (gltf) => {
@@ -49,20 +46,16 @@ loader.load('./basicBox.glb', (gltf) => {
 
     modelGroup.add(model);
 
-    // CENTER MODEL
     const box = new THREE.Box3().setFromObject(model);
     const center = box.getCenter(new THREE.Vector3());
 
     model.position.sub(center);
 
-    // 3/4 ROTATION
     model.rotation.y = Math.PI / 6;
 
-    // CAMERA DISTANCE
     const size = box.getSize(new THREE.Vector3());
     const maxDimension = Math.max(size.x, size.y, size.z);
 
-    // CAMERA ABOVE MODEL
   camera.position.set(
     maxDimension * 0.8,
     maxDimension * 1.2,
@@ -77,7 +70,6 @@ loader.load('./basicBox.glb', (gltf) => {
     console.error('Error loading Smiski:', error);
 });
 
-// MOUSE ROTATION
 let isDragging = false;
 let previousMouseX = 0;
 
@@ -101,7 +93,7 @@ window.addEventListener('mousemove', (event) => {
     previousMouseX = event.clientX;
 });
 
-// TOUCH ROTATION
+
 let previousTouchX = 0;
 
 container.addEventListener('touchstart', (event) => {
@@ -119,7 +111,6 @@ container.addEventListener('touchmove', (event) => {
 
 }, { passive: true });
 
-// ANIMATION
 function animate() {
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
@@ -127,7 +118,6 @@ function animate() {
 
 animate();
 
-// RESPONSIVE RESIZING
 window.addEventListener('resize', () => {
 
     camera.aspect = container.clientWidth / container.clientHeight;
